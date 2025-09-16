@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Nest & Nourish{% endblock %}
+
+{% block content %}
+<div class="container-custom">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h1 class="mb-0">
+                        <i class="fas fa-user-circle text-primary"></i> Your Profile
+                    </h1>
+                    <p class="text-muted mb-0">Manage your account and view your wellness journey</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-circle fa-5x text-primary mb-3"></i>
+                    <h4>{{ user.full_name }}</h4>
+                    <p class="text-muted">@{{ user.username }}</p>
+                    <p class="small text-muted">
+                        <i class="fas fa-calendar"></i>
+                        Member since {{ user.date_joined.strftime('%B %Y') if user.date_joined else '' }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-pie text-info"></i> Wellness Summary
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <h4 class="text-primary">
+                                {{ user.exercises|length }}
+                            </h4>
+                            <small class="text-muted">Total Exercises</small>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="text-success">
+                                {{ user.wellness_entries|length if user.wellness_entries is not none else 0 }}
+                            </h4>
+                            <small class="text-muted">Wellness Entries</small>
+                        </div>
+                    </div>
+
+                    {% if user.exercises %}
+                        {% set total_minutes = 0 %}
+                        {% for ex in user.exercises %}
+                            {% if ex.duration is defined %}
+                                {% set total_minutes = total_minutes + ex.duration %}
+                            {% endif %}
+                        {% endfor %}
+                        <hr>
+                        <div class="text-center">
+                            <h5 class="text-info">{{ total_minutes }} minutes</h5>
+                            <small class="text-muted">Total Exercise Time</small>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle text-info"></i> Account Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('profile') }}">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Full Name</label>
+                                <input type="text" class="form-control" value="{{ user.full_name }}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Username</label>
+                                <input type="text" class="form-control" value="{{ user.username }}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Email</label>
+                                <input type="email" class="form-control" value="{{ user.email }}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Member Since</label>
+                                <input type="text" class="form-control"
+                                       value="{{ user.date_joined.strftime('%B %d, %Y') if user.date_joined else '' }}"
+                                       readonly>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label fw-bold" for="postpartum_months">
+                                        <i class="fas fa-baby-carriage me-2"></i>Months Postpartum
+                                    </label>
+                                    <input type="number" class="form-control" id="postpartum_months"
+                                           name="postpartum_months" value="{{ user.postpartum_months }}"
+                                           min="0" max="24" required>
+                                    <small class="form-text text-muted">
+                                        Update your postpartum period to receive personalized recommendations
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Update Profile
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+  <div class="card-header">
+    <h6 class="mb-0">
+      <i class="fas fa-chart-pie text-info"></i> Wellness Summary
+    </h6>
+  </div>
+  <div class="card-body">
+    <div class="row text-center">
+      <div class="col-6">
+        <h4 class="text-primary">
+          {{ (user.exercises|length) if user.exercises is defined else 0 }}
+        </h4>
+        <small class="text-muted">Total Exercises</small>
+      </div>
+      <div class="col-6">
+        <h4 class="text-success">
+          {{ (user.wellness_entries|length) if (user.wellness_entries is defined and user.wellness_entries) else 0 }}
+        </h4>
+        <small class="text-muted">Wellness Entries</small>
+      </div>
+    </div>
+
+    {% if user.exercises is defined and user.exercises %}
+      {% set total_minutes = 0 %}
+      {% for ex in user.exercises %}
+        {% if ex.duration is defined and ex.duration %}
+          {% set total_minutes = total_minutes + ex.duration %}
+        {% endif %}
+      {% endfor %}
+      <hr>
+      <div class="text-center">
+        <h5 class="text-info">{{ total_minutes }} minutes</h5>
+        <small class="text-muted">Total Exercise Time</small>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-cog text-secondary"></i> Account Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <button class="btn btn-outline-primary w-100">
+                                <i class="fas fa-edit"></i> Edit Profile
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-outline-secondary w-100">
+                                <i class="fas fa-key"></i> Change Password
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-outline-info w-100">
+                                <i class="fas fa-download"></i> Export Data
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-outline-warning w-100">
+                                <i class="fas fa-bell"></i> Notification Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+
+{% block title %}Exercise - Nest & Nourish{% endblock %}
+
+{% block content %}
+<div class="container-custom">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h1 class="mb-0">
+                        <i class="fas fa-dumbbell text-primary"></i> Exercise & Fitness
+                    </h1>
+                    <p class="text-muted mb-0">Stay active and healthy with exercises designed for mothers</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-plus-circle text-success"></i> Log Exercise
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('log_exercise') }}" method="POST" id="exerciseForm">
+                        <div class="mb-3">
+                            <label for="exercise_type" class="form-label">Exercise Type</label>
+                            <select class="form-control" id="exercise_type" name="exercise_type" required onchange="loadExerciseVideos()">
+                                <option value="">Select Exercise</option>
+                                <option value="Prenatal Yoga">Prenatal Yoga</option>
+                                <option value="Postnatal Yoga">Postnatal Yoga</option>
+                                <option value="Walking">Walking</option>
+                                <option value="Swimming">Swimming</option>
+                                <option value="Pilates">Pilates</option>
+                                <option value="Strength Training">Strength Training</option>
+                                <option value="Cardio">Cardio</option>
+                                <option value="Stretching">Stretching</option>
+                                <option value="Pelvic Floor Exercises">Pelvic Floor Exercises</option>
+                                <option value="Core Rehabilitation">Core Rehabilitation</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="duration" class="form-label">Duration (minutes)</label>
+                            <input type="number" class="form-control" id="duration" name="duration" min="1" max="300" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Notes (optional)</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3" placeholder="How did you feel? Any achievements or concerns?"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-save"></i> Log Exercise
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Progress Tracking Form -->
+            <div class="card mt-4" id="progressCard" style="display: none;">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-line text-info"></i> Log Progress
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('log_progress') }}" method="POST">
+                        <input type="hidden" id="progress_exercise_id" name="exercise_id" value="">
+                        
+                        <div class="mb-3">
+                            <label for="performance_rating" class="form-label">How well did you perform? (1-5)</label>
+                            <select class="form-control" name="performance_rating" required>
+                                <option value="">Select Rating</option>
+                                <option value="1">1 - Poor</option>
+                                <option value="2">2 - Fair</option>
+                                <option value="3">3 - Good</option>
+                                <option value="4">4 - Very Good</option>
+                                <option value="5">5 - Excellent</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="energy_level" class="form-label">Energy Level After Exercise (1-10)</label>
+                            <input type="range" class="form-range" name="energy_level" min="1" max="10" value="5" oninput="updateEnergyValue(this.value)">
+                            <div class="text-center">
+                                <small class="text-muted">Energy Level: <span id="energyValue">5</span></small>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="difficulty_felt" class="form-label">How difficult was the exercise? (1-10)</label>
+                            <input type="range" class="form-range" name="difficulty_felt" min="1" max="10" value="5" oninput="updateDifficultyValue(this.value)">
+                            <div class="text-center">
+                                <small class="text-muted">Difficulty: <span id="difficultyValue">5</span></small>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="progress_notes" class="form-label">Progress Notes</label>
+                            <textarea class="form-control" name="notes" rows="2" placeholder="Any observations about your progress?"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-info w-100">
+                            <i class="fas fa-chart-line"></i> Log Progress
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <!-- Exercise Videos Section -->
+            <div class="card mb-4" id="videoSection" style="display: none;">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-video text-danger"></i> Exercise Videos
+                    </h5>
+                </div>
+                <div class="card-body" id="videoContainer">
+                    <!-- Videos will be loaded here -->
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-lightbulb text-warning"></i> Exercise Tips for Mothers
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="exerciseAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pregnancy">
+                                    <i class="fas fa-baby text-pink me-2"></i> During Pregnancy
+                                </button>
+                            </h2>
+                            <div id="pregnancy" class="accordion-collapse collapse show" data-bs-parent="#exerciseAccordion">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-check text-success me-2"></i> Start slowly and listen to your body</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Focus on low-impact activities</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Stay hydrated and avoid overheating</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Strengthen your pelvic floor</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Maintain good posture exercises</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#postpartum">
+                                    <i class="fas fa-heart text-danger me-2"></i> Postpartum Recovery
+                                </button>
+                            </h2>
+                            <div id="postpartum" class="accordion-collapse collapse" data-bs-parent="#exerciseAccordion">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-check text-success me-2"></i> Wait for doctor's clearance (usually 6-8 weeks)</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Start with gentle walks</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Focus on core and pelvic floor rehabilitation</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Gradually increase intensity</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Be patient with your body's recovery</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#general">
+                                    <i class="fas fa-star text-warning me-2"></i> General Tips
+                                </button>
+                            </h2>
+                            <div id="general" class="accordion-collapse collapse" data-bs-parent="#exerciseAccordion">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-check text-success me-2"></i> Aim for 150 minutes of moderate activity per week</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Include strength training 2-3 times per week</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Exercise with your children when possible</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Find activities you enjoy</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Consistency is better than intensity</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-trophy text-warning"></i> Available Exercise Categories
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% for video in exercise_videos %}
+                            <div class="col-md-4">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-play-circle fa-3x text-primary mb-2"></i>
+                                        <h6>{{ video.title }}</h6>
+                                        <small class="text-muted">{{ video.exercise_type }}</small>
+                                        <br>
+                                        <small class="text-info">{{ video.duration }} minutes - {{ video.difficulty_level }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let lastExerciseId = null;
+
+// Handle exercise form submission
+document.getElementById('exerciseForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch('{{ url_for("log_exercise") }}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Exercise logged successfully!');
+            lastExerciseId = data.exercise_id;
+            document.getElementById('progress_exercise_id').value = lastExerciseId;
+            document.getElementById('progressCard').style.display = 'block';
+        } else {
+            alert('Error logging exercise');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Fallback to regular form submission
+        this.submit();
+    });
+});
+
+function loadExerciseVideos() {
+    const exerciseType = document.getElementById('exercise_type').value;
+    if (!exerciseType) {
+        document.getElementById('videoSection').style.display = 'none';
+        return;
+    }
+    
+    fetch(`/get_exercise_videos/${encodeURIComponent(exerciseType)}`)
+    .then(response => response.text())
+    .then(html => {
+        document.getElementById('videoContainer').innerHTML = html;
+        document.getElementById('videoSection').style.display = 'block';
+    })
+    .catch(error => {
+        console.error('Error loading videos:', error);
+    });
+}
+
+function updateEnergyValue(value) {
+    document.getElementById('energyValue').textContent = value;
+}
+
+function updateDifficultyValue(value) {
+    document.getElementById('difficultyValue').textContent = value;
+}
+</script>
+{% endblock %}

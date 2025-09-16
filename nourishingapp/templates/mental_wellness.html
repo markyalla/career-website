@@ -1,0 +1,436 @@
+{% extends "base.html" %}
+
+{% block title %}Mental Wellness - Nest & Nourish{% endblock %}
+
+{% block content %}
+<div class="container-custom">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h1 class="mb-0">
+                        <i class="fas fa-brain text-info"></i> Mental Wellness Support
+                    </h1>
+                    <p class="text-muted mb-0">Your mental health matters. Track your mood and access support resources.</p>
+                    {% if user.postpartum_months >= 0 %}
+                        <small class="text-info">Showing personalized tips for {{ user.postpartum_months }} months postpartum</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Personalized Mental Tips -->
+    {% if mental_tips %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-heart"></i> Personalized Tips for You
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% for tip in mental_tips %}
+                    <div class="alert alert-info mb-3">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        {{ tip.tip_content }}
+                        <small class="d-block text-muted mt-2">
+                            <i class="fas fa-calendar me-1"></i>{{ tip.date_created.strftime('%B %d, %Y') }}
+                        </small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clipboard-check text-primary"></i> Daily Wellness Check-in
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('log_wellness') }}" method="POST">
+                        <div class="mb-3">
+                            <label for="mood_rating" class="form-label">
+                                <i class="fas fa-smile"></i> How are you feeling today? (1-10)
+                            </label>
+                            <input type="range" class="form-range" id="mood_rating" name="mood_rating" min="1" max="10" value="5" oninput="updateMoodLabel(this.value)">
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted">Very Low</small>
+                                <small class="text-muted" id="mood-label">Neutral</small>
+                                <small class="text-muted">Excellent</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="stress_level" class="form-label">
+                                <i class="fas fa-thermometer-half"></i> Stress Level (1-10)
+                            </label>
+                            <input type="range" class="form-range" id="stress_level" name="stress_level" min="1" max="10" value="5" oninput="updateStressLabel(this.value)">
+                            <div class="d-flex justify-content-between">
+                                <small class="text-muted">Very Low</small>
+                                <small class="text-muted" id="stress-label">Moderate</small>
+                                <small class="text-muted">Very High</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="sleep_hours" class="form-label">
+                                <i class="fas fa-bed"></i> Hours of Sleep Last Night
+                            </label>
+                            <input type="number" class="form-control" id="sleep_hours" name="sleep_hours" min="0" max="24" step="0.5" placeholder="e.g., 7.5">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">
+                                <i class="fas fa-sticky-note"></i> Today's Reflections (optional)
+                            </label>
+                            <textarea class="form-control" id="notes" name="notes" rows="4" placeholder="How are you feeling? What's on your mind? Any wins or challenges today?"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-save"></i> Save Wellness Check-in
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-lightbulb text-warning"></i> Mental Wellness Tips
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="wellnessAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#mindfulness">
+                                    <i class="fas fa-om text-purple me-2"></i> Mindfulness & Meditation
+                                </button>
+                            </h2>
+                            <div id="mindfulness" class="accordion-collapse collapse show" data-bs-parent="#wellnessAccordion">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-check text-success me-2"></i> Practice 5-minute daily meditation</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Try deep breathing exercises</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Practice gratitude journaling</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Use mindful eating techniques</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Practice body scan meditation</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#stress">
+                                    <i class="fas fa-shield-alt text-primary me-2"></i> Stress Management
+                                </button>
+                            </h2>
+                            <div id="stress" class="accordion-collapse collapse" data-bs-parent="#wellnessAccordion">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-check text-success me-2"></i> Identify stress triggers</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Practice saying "no" to extra commitments</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Ask for help when needed</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Create realistic daily schedules</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Take regular breaks throughout the day</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#selfcare">
+                                    <i class="fas fa-heart text-danger me-2"></i> Self-Care Practices
+                                </button>
+                            </h2>
+                            <div id="selfcare" class="accordion-collapse collapse" data-bs-parent="#wellnessAccordion">
+                                <div class="accordion-body">
+                                    <ul class="list-unstyled">
+                                        <li><i class="fas fa-check text-success me-2"></i> Schedule "me time" daily</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Engage in hobbies you enjoy</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Take relaxing baths</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Read inspiring books</li>
+                                        <li><i class="fas fa-check text-success me-2"></i> Connect with friends and family</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mental Wellness Resources from Admin -->
+    {% if wellness_resources %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-book-open text-success"></i> Mental Wellness Resources
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% for resource in wellness_resources %}
+                        <div class="col-md-4">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <span class="badge bg-primary">{{ resource.resource_type }}</span>
+                                        {% if resource.mood_category %}
+                                            <span class="badge bg-secondary">{{ resource.mood_category }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <h6 class="card-title">{{ resource.title }}</h6>
+                                    <p class="card-text small">{{ resource.content }}</p>
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>{{ resource.created_at.strftime('%B %d, %Y') }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row mt-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-hands-helping text-success"></i> Mental Health Resources
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-phone fa-2x text-primary mb-2"></i>
+                                    <h6>Crisis Support</h6>
+                                    <p class="small text-muted mb-2">24/7 mental health crisis support</p>
+                                    <a href="tel:988" class="btn btn-primary btn-sm">Call 988</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-comments fa-2x text-success mb-2"></i>
+                                    <h6>Postpartum Support</h6>
+                                    <p class="small text-muted mb-2">Specialized support for new mothers</p>
+                                    <a href="https://www.postpartum.net" class="btn btn-success btn-sm" target="_blank">Get Help</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-quote-left text-info"></i> Daily Affirmation
+                    </h5>
+                </div>
+                <div class="card-body text-center">
+                    <blockquote class="blockquote">
+                        <p class="mb-3">"You are doing an amazing job. Your love and care make all the difference."</p>
+                    </blockquote>
+                    <button class="btn btn-info btn-sm" onclick="newAffirmation()">
+                        <i class="fas fa-refresh"></i> New Affirmation
+                    </button>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-tools text-warning"></i> Quick Tools
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary" onclick="guidedBreathing()">
+                            <i class="fas fa-wind"></i> 5-Minute Breathing Exercise
+                        </button>
+                        <button class="btn btn-outline-success" onclick="gratitudePractice()">
+                            <i class="fas fa-heart"></i> Gratitude Practice
+                        </button>
+                        <button class="btn btn-outline-info" onclick="progressiveRelaxation()">
+                            <i class="fas fa-spa"></i> Progressive Relaxation
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Breathing Exercise Modal -->
+<div class="modal fade" id="breathingModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-wind text-primary"></i> Guided Breathing Exercise
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="breathing-circle mb-4" id="breathingCircle">
+                    <div class="circle-inner">
+                        <span id="breathingText">Click Start</span>
+                    </div>
+                </div>
+                <button class="btn btn-primary" id="breathingBtn" onclick="startBreathing()">Start Exercise</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.breathing-circle {
+    width: 200px;
+    height: 200px;
+    border: 3px solid var(--primary-color);
+    border-radius: 50%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 4s ease-in-out;
+}
+
+.circle-inner {
+    text-align: center;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.breathing-in {
+    transform: scale(1.3);
+}
+
+.breathing-out {
+    transform: scale(1.0);
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function updateMoodLabel(value) {
+    const labels = ['', 'Very Low', 'Low', 'Poor', 'Below Average', 'Neutral', 'Good', 'Very Good', 'Great', 'Excellent', 'Amazing'];
+    document.getElementById('mood-label').textContent = labels[value];
+}
+
+function updateStressLabel(value) {
+    const labels = ['', 'Very Low', 'Low', 'Mild', 'Moderate', 'Moderate', 'High', 'Very High', 'Severe', 'Extreme', 'Overwhelming'];
+    document.getElementById('stress-label').textContent = labels[value];
+}
+
+const affirmations = [
+    "You are doing an amazing job. Your love and care make all the difference.",
+    "You are stronger than you know and more loved than you realize.",
+    "Taking care of yourself is not selfish—it's necessary.",
+    "You are enough, exactly as you are today.",
+    "Your mental health matters and deserves attention.",
+    "It's okay to have difficult days. Tomorrow is a new opportunity.",
+    "You are creating a loving environment for your family.",
+    "Your efforts, no matter how small, are making a difference.",
+    "You deserve compassion, especially from yourself.",
+    "You are learning and growing every day as a mother."
+];
+
+function newAffirmation() {
+    const randomAffirmation = affirmations[Math.floor(Math.random() * affirmations.length)];
+    document.querySelector('.blockquote p').textContent = `"${randomAffirmation}"`;
+}
+
+function guidedBreathing() {
+    const modal = new bootstrap.Modal(document.getElementById('breathingModal'));
+    modal.show();
+}
+
+let breathingActive = false;
+let breathingTimer;
+
+function startBreathing() {
+    const circle = document.getElementById('breathingCircle');
+    const text = document.getElementById('breathingText');
+    const btn = document.getElementById('breathingBtn');
+    
+    if (!breathingActive) {
+        breathingActive = true;
+        btn.textContent = 'Stop Exercise';
+        breathingCycle();
+    } else {
+        breathingActive = false;
+        btn.textContent = 'Start Exercise';
+        text.textContent = 'Click Start';
+        circle.classList.remove('breathing-in', 'breathing-out');
+        clearTimeout(breathingTimer);
+    }
+}
+
+function breathingCycle() {
+    if (!breathingActive) return;
+    
+    const circle = document.getElementById('breathingCircle');
+    const text = document.getElementById('breathingText');
+    
+    // Inhale
+    text.textContent = 'Breathe In';
+    circle.classList.remove('breathing-out');
+    circle.classList.add('breathing-in');
+    
+    breathingTimer = setTimeout(() => {
+        if (!breathingActive) return;
+        // Hold
+        text.textContent = 'Hold';
+        
+        breathingTimer = setTimeout(() => {
+            if (!breathingActive) return;
+            // Exhale
+            text.textContent = 'Breathe Out';
+            circle.classList.remove('breathing-in');
+            circle.classList.add('breathing-out');
+            
+            breathingTimer = setTimeout(() => {
+                if (!breathingActive) return;
+                breathingCycle(); // Repeat
+            }, 4000);
+        }, 2000);
+    }, 4000);
+}
+
+function gratitudePractice() {
+    alert('Take a moment to think of three things you\'re grateful for today:\n\n1. Something about yourself\n2. Something about your family\n3. Something in your environment\n\nReflect on why these things bring you joy.');
+}
+
+function progressiveRelaxation() {
+    alert('Progressive Muscle Relaxation:\n\n1. Sit comfortably and close your eyes\n2. Start with your toes - tense for 5 seconds, then relax\n3. Move up through each muscle group\n4. Focus on the contrast between tension and relaxation\n5. End with deep, slow breaths\n\nTake your time and be gentle with yourself.');
+}
+</script>
+{% endblock %}

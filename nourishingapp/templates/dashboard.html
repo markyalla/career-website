@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Nest & Nourish{% endblock %}
+
+{% block content %}
+<div class="container-custom">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-body p-4">
+                    <h1 class="mb-0">
+                        <i class="fas fa-sun text-warning"></i> Welcome back, {{ session.full_name }}!
+                    </h1>
+                    <p class="text-muted mb-0">Let's continue nurturing your wellness journey today.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6 col-xl-3">
+            <div class="wellness-stat">
+                <i class="fas fa-dumbbell fa-2x mb-2"></i>
+                <h4>{{ exercises|length }}</h4>
+                <small>Recent Exercises</small>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-xl-3">
+            <div class="wellness-stat">
+                <i class="fas fa-heart fa-2x mb-2"></i>
+                <h4>{{ wellness_entries|length }}</h4>
+                <small>Wellness Entries</small>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-xl-3">
+            <div class="wellness-stat">
+                <i class="fas fa-calendar-day fa-2x mb-2"></i>
+                <h4>{{ (user.date_joined.strftime('%B %d, %Y')) }}</h4>
+                <small>Member Since</small>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-xl-3">
+            <div class="wellness-stat">
+                <i class="fas fa-trophy fa-2x mb-2"></i>
+                <h4>Great!</h4>
+                <small>Keep Going</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">
+                        <i class="fas fa-dumbbell text-primary"></i> Recent Exercises
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if exercises %}
+                        <div class="list-group list-group-flush">
+                            {% for exercise in exercises %}
+                                <div class="list-group-item border-0 px-0">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">{{ exercise.exercise_type }}</h6>
+                                            <small class="text-muted">{{ exercise.date_completed.strftime('%B %d, %Y') }}</small>
+                                        </div>
+                                        <span class="badge bg-primary rounded-pill">{{ exercise.duration }} min</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-dumbbell fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No exercises logged yet.</p>
+                            <a href="{{ url_for('exercise') }}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Log Your First Exercise
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">
+                        <i class="fas fa-brain text-success"></i> Wellness Check-ins
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if wellness_entries %}
+                        <div class="list-group list-group-flush">
+                            {% for entry in wellness_entries %}
+                                <div class="list-group-item border-0 px-0">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex gap-3 mb-2">
+                                                <span class="badge bg-info">Mood: {{ entry.mood_rating }}/10</span>
+                                                <span class="badge bg-warning">Stress: {{ entry.stress_level }}/10</span>
+                                                {% if entry.sleep_hours %}
+                                                    <span class="badge bg-success">Sleep: {{ entry.sleep_hours }}h</span>
+                                                {% endif %}
+                                            </div>
+                                            <small class="text-muted">{{ entry.date_recorded.strftime('%B %d, %Y at %I:%M %p') }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-brain fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No wellness entries yet.</p>
+                            <a href="{{ url_for('mental_wellness') }}" class="btn btn-success">
+                                <i class="fas fa-plus"></i> Start Tracking Wellness
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-dumbbell fa-3x text-primary mb-3"></i>
+                    <h5>Exercise</h5>
+                    <p class="text-muted">Log workouts and track fitness</p>
+                    <a href="{{ url_for('exercise') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Log Exercise
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-spa fa-3x text-success mb-3"></i>
+                    <h5>Recovery</h5>
+                    <p class="text-muted">Tips and guidance for self-care</p>
+                    <a href="{{ url_for('recovery') }}" class="btn btn-success">
+                        <i class="fas fa-leaf"></i> Explore Tips
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-brain fa-3x text-info mb-3"></i>
+                    <h5>Mental Wellness</h5>
+                    <p class="text-muted">Track mood and mental health</p>
+                    <a href="{{ url_for('mental_wellness') }}" class="btn btn-info">
+                        <i class="fas fa-heart"></i> Check In
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <i class="fas fa-user-circle fa-3x text-secondary mb-3"></i>
+                    <h5>Profile</h5>
+                    <p class="text-muted">Manage your account settings</p>
+                    <a href="{{ url_for('profile') }}" class="btn btn-secondary">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

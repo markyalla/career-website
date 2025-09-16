@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+
+{% block title %}Recovery - Nest & Nourish{% endblock %}
+
+{% block content %}
+<div class="container-custom">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h1 class="mb-0">
+                        <i class="fas fa-spa text-success"></i> Recovery & Self-Care
+                    </h1>
+                    <p class="text-muted mb-0">Essential recovery tips and self-care practices for mothers</p>
+                    {% if user.postpartum_months <= 3 %}
+                        <small class="text-info">Currently showing Early Recovery tips for {{ user.postpartum_months }} months postpartum</small>
+                    {% elif user.postpartum_months <= 12 %}
+                        <small class="text-info">Currently showing Mid Recovery tips for {{ user.postpartum_months }} months postpartum</small>
+                    {% else %}
+                        <small class="text-info">Currently showing Late Recovery tips for {{ user.postpartum_months }} months postpartum</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Personalized Recovery Tips -->
+    {% if recovery_tips %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-star text-warning"></i> Personalized Recovery Tips for You
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% for tip in recovery_tips %}
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title text-primary">{{ tip.title }}</h6>
+                                    <p class="card-text">{{ tip.content }}</p>
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock me-1"></i>{{ tip.created_at.strftime('%B %d, %Y') }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-leaf text-success"></i> Recovery Guidelines
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body">
+                                    <div class="text-center mb-3">
+                                        <i class="fas fa-bed fa-2x text-primary"></i>
+                                    </div>
+                                    <h6 class="text-center">Rest & Sleep</h6>
+                                    <ul class="list-unstyled small">
+                                        <li><i class="fas fa-moon text-primary me-2"></i> Aim for 7-9 hours of sleep when possible</li>
+                                        <li><i class="fas fa-clock text-primary me-2"></i> Take short naps during the day</li>
+                                        <li><i class="fas fa-bed text-primary me-2"></i> Create a relaxing bedtime routine</li>
+                                        <li><i class="fas fa-mobile-alt text-primary me-2"></i> Limit screen time before bed</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body">
+                                    <div class="text-center mb-3">
+                                        <i class="fas fa-utensils fa-2x text-success"></i>
+                                    </div>
+                                    <h6 class="text-center">Nutrition</h6>
+                                    <ul class="list-unstyled small">
+                                        <li><i class="fas fa-apple-alt text-success me-2"></i> Eat regular, balanced meals</li>
+                                        <li><i class="fas fa-tint text-success me-2"></i> Stay well hydrated</li>
+                                        <li><i class="fas fa-fish text-success me-2"></i> Include omega-3 rich foods</li>
+                                        <li><i class="fas fa-leaf text-success me-2"></i> Eat plenty of fruits and vegetables</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body">
+                                    <div class="text-center mb-3">
+                                        <i class="fas fa-hot-tub fa-2x text-info"></i>
+                                    </div>
+                                    <h6 class="text-center">Physical Recovery</h6>
+                                    <ul class="list-unstyled small">
+                                        <li><i class="fas fa-thermometer-half text-info me-2"></i> Use heat therapy for sore muscles</li>
+                                        <li><i class="fas fa-snowflake text-info me-2"></i> Apply ice for inflammation</li>
+                                        <li><i class="fas fa-hands text-info me-2"></i> Try gentle massage</li>
+                                        <li><i class="fas fa-walking text-info me-2"></i> Take gentle walks daily</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body">
+                                    <div class="text-center mb-3">
+                                        <i class="fas fa-heart fa-2x text-danger"></i>
+                                    </div>
+                                    <h6 class="text-center">Emotional Recovery</h6>
+                                    <ul class="list-unstyled small">
+                                        <li><i class="fas fa-users text-danger me-2"></i> Connect with other mothers</li>
+                                        <li><i class="fas fa-book text-danger me-2"></i> Practice mindful reading</li>
+                                        <li><i class="fas fa-music text-danger me-2"></i> Listen to calming music</li>
+                                        <li><i class="fas fa-comment text-danger me-2"></i> Talk about your feelings</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Recovery Tips -->
+            {% if all_recovery_tips %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list text-info"></i> All Recovery Tips
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% for tip in all_recovery_tips %}
+                        <div class="col-md-4">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body">
+                                    <span class="badge bg-secondary mb-2">{{ tip.recovery_stage }}</span>
+                                    <h6 class="card-title">{{ tip.title }}</h6>
+                                    <p class="card-text small">{{ tip.content }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clock text-warning"></i> Daily Recovery Routine Suggestions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="d-flex mb-4">
+                            <div class="flex-shrink-0">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-sun"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6>Morning (7:00 AM - 9:00 AM)</h6>
+                                <p class="text-muted mb-0">Gentle stretching, hydration, nutritious breakfast, and deep breathing exercises.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex mb-4">
+                            <div class="flex-shrink-0">
+                                <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-sun"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6>Midday (12:00 PM - 2:00 PM)</h6>
+                                <p class="text-muted mb-0">Short walk, healthy lunch, 10-15 minute power nap if possible.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex mb-4">
+                            <div class="flex-shrink-0">
+                                <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-moon"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6>Evening (6:00 PM - 8:00 PM)</h6>
+                                <p class="text-muted mb-0">Light exercise or yoga, warm bath, journaling, prepare for restful sleep.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exclamation-triangle text-warning"></i> Important Reminders
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <strong><i class="fas fa-stethoscope me-2"></i> Medical Advice</strong>
+                        <p class="mb-0 small">Always consult with your healthcare provider before starting any new exercise or recovery routine, especially during pregnancy and postpartum periods.</p>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <strong><i class="fas fa-heart me-2"></i> Listen to Your Body</strong>
+                        <p class="mb-0 small">Every mother's journey is unique. What works for others may not work for you, and that's perfectly okay.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-book text-primary"></i> Recovery Resources
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action border-0">
+                            <i class="fas fa-play-circle text-primary me-2"></i>
+                            Guided Meditation (5 min)
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action border-0">
+                            <i class="fas fa-book-open text-success me-2"></i>
+                            Postpartum Recovery Guide
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action border-0">
+                            <i class="fas fa-utensils text-warning me-2"></i>
+                            Nutrition for New Mothers
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action border-0">
+                            <i class="fas fa-baby text-info me-2"></i>
+                            Sleep Tips for Parents
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-body text-center">
+                    <i class="fas fa-phone fa-2x text-danger mb-3"></i>
+                    <h6>Need Immediate Help?</h6>
+                    <p class="small text-muted mb-3">If you're experiencing severe pain or concerning symptoms</p>
+                    <button class="btn btn-danger btn-sm">
+                        <i class="fas fa-phone"></i> Contact Healthcare Provider
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

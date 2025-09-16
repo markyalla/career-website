@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="display-4 fw-bold mb-4">
+                    <i class="fas fa-heart"></i> Nest & Nourish
+                </h1>
+                <p class="lead mb-4">
+                    Your comprehensive wellness companion designed especially for mothers. 
+                    Track your fitness, recovery, and mental wellness journey with care and compassion.
+                </p>
+                <div class="d-flex gap-3 justify-content-center">
+                    <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus"></i> Get Started
+                    </a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-custom">
+    <div class="row g-4 my-5">
+        <div class="col-md-6 col-lg-3">
+            <div class="card feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-dumbbell"></i>
+                </div>
+                <h5>Exercise Tracking</h5>
+                <p class="text-muted">
+                    Log your workouts and track your fitness progress with exercises designed for mothers.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-spa"></i>
+                </div>
+                <h5>Recovery Tips</h5>
+                <p class="text-muted">
+                    Access expert recovery guidance and self-care tips tailored for your motherhood journey.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h5>Mental Wellness</h5>
+                <p class="text-muted">
+                    Monitor your emotional wellbeing and access mental health resources and support.
+                </p>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h5>Progress Tracking</h5>
+                <p class="text-muted">
+                    Visualize your wellness journey with comprehensive tracking and insights.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row my-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <div class="card">
+                <div class="card-body p-5">
+                    <h2 class="mb-4">Why Choose Nest & Nourish?</h2>
+                    <p class="lead mb-4">
+                        Motherhood is a beautiful, challenging journey. We understand that taking care of yourself 
+                        while caring for your family requires special support, understanding, and tools designed 
+                        just for you.
+                    </p>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <i class="fas fa-heart feature-icon"></i>
+                            <h6>Designed with Love</h6>
+                            <small class="text-muted">Every feature crafted with mothers in mind</small>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="fas fa-shield-alt feature-icon"></i>
+                            <h6>Safe & Secure</h6>
+                            <small class="text-muted">Your personal data is protected and private</small>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="fas fa-users feature-icon"></i>
+                            <h6>Community Support</h6>
+                            <small class="text-muted">Join a supportive community of mothers</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
